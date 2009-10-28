@@ -2,6 +2,7 @@ require 'rubygems'
 require 'open-uri'
 require 'logger'
 require 'sina_blog_parser'
+require 'sanitize'
 
 logger = Logger.new(STDERR)
 BLOG_PATH = "cache/"
@@ -54,12 +55,12 @@ if (ARGV.length == 1)
   end
 
   logger.debug "Save the result file..."
-  open("result/#{blog_name}.html", "w") do |f|
+  open("result/#{blog_name}.txt", "w") do |f|
     posts.reverse.each do |post|
-      f << "<h2>#{post.title}</h2>\n"
-      f << "<p><em>#{post.date}</em></p>\n"
-      f << post.content + "\n"
-      f << "<hr />\n"
+      f << Sanitize.clean(post.title) + "\n"
+      f << post.date + "\n\n"
+      f << Sanitize.clean(post.content) + "\n"
+      f << "------------------------------------\n"
     end
   end
 
